@@ -25,7 +25,8 @@ public class BinaryTree<E> implements Serializable {
      *
      * @param root the root node of this tree
      */
-    protected BinaryTree(Node<E> root) {
+    protected BinaryTree(Node<E> root)
+    {
         this.root = root;
     }
 
@@ -167,7 +168,8 @@ public class BinaryTree<E> implements Serializable {
      *
      * @param <E> Generic to hold any data type
      */
-    protected static class Node<E> implements Serializable {
+    protected static class Node<E> implements Serializable
+    {
         /** The constituent data for this Node. */
         protected E data;
         /** The Node's left subtree. */
@@ -180,14 +182,16 @@ public class BinaryTree<E> implements Serializable {
          *
          * @param data The data to hold within the node
          */
-        public Node(E data) {
+        public Node(E data)
+        {
             this.data = data;
             left = null;
             right = null;
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return data.toString();
         }
 
