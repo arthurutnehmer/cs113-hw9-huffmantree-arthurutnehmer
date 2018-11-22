@@ -1,14 +1,12 @@
 package edu.miracosta.cs113;
 
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-public class TextFileGenerator {
+public class TextFileGenerator
+{
     private static final String USER_AGENT = "Mozilla/5.0"; //needed for HTTP request
     private static final String VALID_SYMBOLS = " !.?\t\n";
 
@@ -18,7 +16,8 @@ public class TextFileGenerator {
      * @param outputFilename The file we want to output into
      * @throws IOException
      */
-    public static void makeCleanFile(String url, String outputFilename) throws IOException {
+    public static void makeCleanFile(String url, String outputFilename) throws IOException
+    {
         URL http = new URL(url);
         HttpURLConnection conn = (HttpURLConnection) http.openConnection();
 
@@ -59,16 +58,19 @@ public class TextFileGenerator {
      * @param unParsed The dirty/unparsed line
      * @return The cleaned line
      */
-    public static String cleanString(String unParsed) {
+    public static String cleanString(String unParsed)
+    {
         char current;
         StringBuilder returnString = new StringBuilder();
 
         // Loop through each char and if it is within the whitelist,
         // then add it to the StringBuilder
-        for(int i = 0; i < unParsed.length(); i++) {
+        for(int i = 0; i < unParsed.length(); i++)
+        {
             current = unParsed.charAt(i);
 
-            if(TextFileGenerator.withinWhiteList(current)) {
+            if(TextFileGenerator.withinWhiteList(current))
+            {
                 returnString.append(current);
             }
         }
@@ -108,5 +110,31 @@ public class TextFileGenerator {
         count--;//accounting for end of file (EOF) not having newline char
 
         return count;
+    }
+
+
+    /**
+     * Method that will read data from the file and convert it to a string.
+     */
+    public static String readDataToString(String fileLocation)
+    {
+        String completeString = "";
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader(fileLocation));
+            String st;
+            while ((st = br.readLine()) != null)
+            {
+                completeString += st + "\n";
+            }
+
+            completeString = completeString.substring(0, completeString.length()-1);
+
+        }
+        catch (Exception e)
+        {
+            System.out.println("A problem has occurred while parsing the file.");
+        }
+        return completeString;
     }
 }

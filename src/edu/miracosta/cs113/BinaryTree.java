@@ -1,6 +1,7 @@
 package edu.miracosta.cs113;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /**
@@ -9,14 +10,16 @@ import java.util.Scanner;
  *
  * @param <E> Generic to hold any data type
  */
-public class BinaryTree<E> implements Serializable {
+public class BinaryTree<E> implements Serializable
+{
     /** The root node of this tree. */
     protected Node<E> root;
 
     /**
      * Default constructor to build an empty BinaryTree.
      */
-    public BinaryTree() {
+    public BinaryTree()
+    {
         root = null;
     }
 
@@ -28,6 +31,17 @@ public class BinaryTree<E> implements Serializable {
     protected BinaryTree(Node<E> root)
     {
         this.root = root;
+    }
+
+    /**
+     * return a node of type character and weight.
+     *
+     * @param node The node to be returned with info.
+     */
+    public Node<CharacterAndWeight> addNodeWithLetterInfo(char letter, int prevalence)
+    {
+        Node<CharacterAndWeight> node = new Node<CharacterAndWeight>(new CharacterAndWeight(letter, prevalence));
+        return node;
     }
 
     /**
