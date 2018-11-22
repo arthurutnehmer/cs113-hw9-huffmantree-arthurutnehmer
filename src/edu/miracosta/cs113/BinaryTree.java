@@ -23,6 +23,7 @@ public class BinaryTree<E> implements Serializable
         root = null;
     }
 
+
     /**
      * Constructor to build a BinaryTree with the given Node shallow copied and stored as the root.
      *

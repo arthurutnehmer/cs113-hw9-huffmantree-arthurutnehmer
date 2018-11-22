@@ -38,7 +38,7 @@ public class MainTest
             //print the tree
             aBinaryTree.printHuffmanTree();
 
-            System.out.println(aBinaryTree.encodeACharacter('a'));
+            aBinaryTree.decodeACharacter(aBinaryTree.encodeACharacter('c'));
 
 
         }

@@ -21,6 +21,14 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
     }
 
     /**
+     * will get the root of the huffman tree.
+     */
+    public Node<CharacterAndWeight> getRoot()
+    {
+        return huffmanTree.root;
+    }
+
+    /**
      * Construct the huffman tree.
      */
 
@@ -29,9 +37,7 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
         while (queOfPrevalence.size() > 1)
         {
             //Start with the two smallest nodes.
-            Node<CharacterAndWeight> nodeToInsert = queOfPrevalence.remove();
-            if (!queOfPrevalence.isEmpty())
-            {
+             Node<CharacterAndWeight> nodeToInsert = queOfPrevalence.remove();
                 //Get second node.
                 Node<CharacterAndWeight> nodeToInsertTwo = queOfPrevalence.remove();
                 //get combined weight.
@@ -39,11 +45,10 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
                 //make new node that will be a weight node.
                 Node<CharacterAndWeight> nodeThatContainsCombinedWeight = new Node<CharacterAndWeight>(new CharacterAndWeight('*', combinedWeight));
                 //connect nodes.
-                nodeThatContainsCombinedWeight.left = nodeToInsert;
-                nodeThatContainsCombinedWeight.right = nodeToInsertTwo;
+                nodeThatContainsCombinedWeight.right = nodeToInsert;
+                nodeThatContainsCombinedWeight.left = nodeToInsertTwo;
                 //insert.
                 queOfPrevalence.add(nodeThatContainsCombinedWeight);
-            }
         }
         huffmanTree.root = queOfPrevalence.remove();
     }
@@ -93,37 +98,74 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
      */
     public String encodeACharacter(char Character)
     {
-       return encodeACharacterRecursive(huffmanTree.root,Character);
+        String message =  encodeACharacterRecursive(huffmanTree.root,Character);
+        message = message.substring(0, message.length()-1);
+        return message;
     }
 
-    public String encodeACharacterRecursive(Node<CharacterAndWeight> tmp, char character)
+    /**
+     * decode a character
+     */
+    public void decodeACharacter(String number)
     {
-        if(tmp.left != null)
+        String[] numberArray = number.split("");
+        Node<CharacterAndWeight> tmpNode = huffmanTree.root;
+        for(int i = 0; i < numberArray.length;i++)
         {
-            Node<CharacterAndWeight> tmpLeft = tmp.left;
-            if(tmp.data.character == character)
+            if (numberArray[i].equals("0"))
             {
-                return "0";
+                tmpNode = tmpNode.left;
             }
-            else
+            else if (numberArray[i].equals("1"))
             {
-                return ("0" + encodeACharacterRecursive(tmpLeft, character));
+                tmpNode = tmpNode.right;
             }
         }
 
-        if(tmp.right != null)
-        {
-            Node<CharacterAndWeight> tmpRight = tmp.right;
-            if(tmp.data.character == character)
-            {
-                return "1";
-            }
-            else
-            {
-                return ("1" + encodeACharacterRecursive(tmpRight, character));
-            }
-        }
-        return null;
+        System.out.println(tmpNode);
+    }
+    public String encodeACharacterRecursive(Node<CharacterAndWeight> tmp, char character)
+    {
+        String toReturn = "";
+       if(tmp.data.character == character)
+       {
+           return "*";
+       }
+       else if(tmp.left == null && tmp.right == null)
+       {
+           return "";
+       }
+       else if(tmp.left == null)
+       {
+           return "1" + encodeACharacterRecursive(tmp.right, character);
+       }
+       else if(tmp.right == null)
+       {
+           return "0" + encodeACharacterRecursive(tmp.left, character);
+       }
+       else
+       {
+           String left = "";
+           String right = "";
+           if(tmp.left != null)
+           {
+               left = "0" + encodeACharacterRecursive(tmp.left, character);
+           }
+           if(tmp.right != null)
+           {
+                right = "1" + encodeACharacterRecursive(tmp.right, character);
+           }
+           if(right.charAt(right.length()-1) == '*')
+           {
+               toReturn = right;
+           }
+           if(left.charAt(left.length()-1) == '*')
+           {
+               toReturn = left;
+           }
+       }
+
+       return toReturn;
     }
     /**
      * Finds the amount of times that each character may occur and stores the result as an object.
