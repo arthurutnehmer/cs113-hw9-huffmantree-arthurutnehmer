@@ -39,9 +39,9 @@ public class BinaryTree<E> implements Serializable
      *
      * @param node The node to be returned with info.
      */
-    public Node<CharacterAndWeight> addNodeWithLetterInfo(char letter, int prevalence)
+    public Node<CharacterAndWeight> addNodeWithLetterInfo(CharacterAndWeight data)
     {
-        Node<CharacterAndWeight> node = new Node<CharacterAndWeight>(new CharacterAndWeight(letter, prevalence));
+        Node<CharacterAndWeight> node = new Node<CharacterAndWeight>(data);
         return node;
     }
 

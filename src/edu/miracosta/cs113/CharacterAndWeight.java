@@ -1,16 +1,19 @@
 package edu.miracosta.cs113;
+import java.sql.Timestamp;
 /**
  * Character  : Class that is within a node. It will contain the weight and the character.
  */
-public class CharacterAndWeight implements Comparable
+public class CharacterAndWeight
 {
     char character;
     int prevalence;
+    private int timeWhenCreated;
 
     public CharacterAndWeight(char Character, int Prevalence)
     {
         character = Character;
         prevalence = Prevalence;
+        timeWhenCreated = 0;
     }
 
     /*sets the character in the node.
@@ -34,6 +37,19 @@ public class CharacterAndWeight implements Comparable
         return prevalence;
     }
 
+    /*gets the time when the item was created.
+     */
+    public int getTimeWhenCreated()
+    {
+        return timeWhenCreated;
+    }
+    /*sets the order in which the items were created.
+     */
+    public void setTimeWhenCreated(int timeWhenCreated)
+    {
+        this.timeWhenCreated = timeWhenCreated;
+    }
+
     /*sets the prevalence.
      */
     public void setPrevalence(int prevalence)
@@ -46,26 +62,6 @@ public class CharacterAndWeight implements Comparable
     public void addOneToPrevalence()
     {
         prevalence = (prevalence+1);
-    }
-
-    /*Compares the weight of each object.
-     */
-    @Override
-    public int compareTo(Object o)
-    {
-
-        if(((CharacterAndWeight) o).prevalence > this.prevalence)
-        {
-            return -1;
-        }
-        else if(((CharacterAndWeight) o).prevalence < this.prevalence)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
     }
 
     /*Converts to string.

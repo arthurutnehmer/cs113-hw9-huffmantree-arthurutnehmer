@@ -21,6 +21,22 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
     }
 
     /**
+     * Initializes the class with and array of prevalence for each character and  a priority que.
+     * Also takes a string in and makes a tree.
+     */
+    public HuffmanTree(String messageToEncode)
+    {
+        arrayOfPrevalence = new CharacterAndWeight[80];
+        queOfPrevalence = new PriorityQueue<Node<CharacterAndWeight>>(new PrevalenceComparator());
+        huffmanTree = new BinaryTree<CharacterAndWeight>();
+
+        getPrevalenceOfEachCharacter(messageToEncode);
+        putPrevalenceIntoAPrioriQue();
+        constructTheHuffmanTree();
+
+    }
+
+    /**
      * will get the root of the huffman tree.
      */
     public Node<CharacterAndWeight> getRoot()
@@ -34,22 +50,27 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
 
     public void constructTheHuffmanTree()
     {
+        int timeWhenCreated = queOfPrevalence.size()+1;
         while (queOfPrevalence.size() > 1)
         {
             //Start with the two smallest nodes.
-             Node<CharacterAndWeight> nodeToInsert = queOfPrevalence.remove();
+             Node<CharacterAndWeight> nodeToInsert = queOfPrevalence.poll();
                 //Get second node.
-                Node<CharacterAndWeight> nodeToInsertTwo = queOfPrevalence.remove();
+                Node<CharacterAndWeight> nodeToInsertTwo = queOfPrevalence.poll();
                 //get combined weight.
                 int combinedWeight = nodeToInsert.data.prevalence + nodeToInsertTwo.data.prevalence;
                 //make new node that will be a weight node.
                 Node<CharacterAndWeight> nodeThatContainsCombinedWeight = new Node<CharacterAndWeight>(new CharacterAndWeight('*', combinedWeight));
+                nodeThatContainsCombinedWeight.data.setTimeWhenCreated(timeWhenCreated);
                 //connect nodes.
                 nodeThatContainsCombinedWeight.right = nodeToInsert;
                 nodeThatContainsCombinedWeight.left = nodeToInsertTwo;
                 //insert.
                 queOfPrevalence.add(nodeThatContainsCombinedWeight);
+                //update the time stamp
+            timeWhenCreated++;
         }
+
         huffmanTree.root = queOfPrevalence.remove();
     }
 
@@ -63,14 +84,16 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
             if(arrayOfPrevalence[i] != null)
             {
                 //make new node to put into the que.
-                Node<CharacterAndWeight> nodeToInsert = addNodeWithLetterInfo(arrayOfPrevalence[i].character, arrayOfPrevalence[i].prevalence);
-                queOfPrevalence.add(nodeToInsert);
+                Node<CharacterAndWeight> nodeToInsert = addNodeWithLetterInfo(arrayOfPrevalence[i]);
+                nodeToInsert.data.setTimeWhenCreated(i);
+                queOfPrevalence.offer(nodeToInsert);
             }
             else
             {
-                i = arrayOfPrevalence.length;
+
             }
         }
+
     }
     /**
      * Prints the tree
@@ -84,7 +107,7 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
      */
     public void printQueOfPrevalence()
     {
-        PriorityQueue<BinaryTree.Node> test = new PriorityQueue<BinaryTree.Node>(queOfPrevalence);
+        PriorityQueue<Node<CharacterAndWeight>> test = new PriorityQueue<Node<CharacterAndWeight>>(queOfPrevalence);
         while (!test.isEmpty())
         {
             System.out.println(test.remove());
@@ -94,19 +117,9 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
     }
 
     /**
-     * Encode a character.
-     */
-    public String encodeACharacter(char Character)
-    {
-        String message =  encodeACharacterRecursive(huffmanTree.root,Character);
-        message = message.substring(0, message.length()-1);
-        return message;
-    }
-
-    /**
      * decode a character
      */
-    public void decodeACharacter(String number)
+    public String decodeACharacter(String number)
     {
         String[] numberArray = number.split("");
         Node<CharacterAndWeight> tmpNode = huffmanTree.root;
@@ -121,9 +134,54 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
                 tmpNode = tmpNode.right;
             }
         }
-
-        System.out.println(tmpNode);
+        return  Character.toString(tmpNode.data.character);
     }
+
+    /**
+     * decode a String
+     */
+    public String decodeAString(String message)
+    {
+        //tmp node
+        Node<CharacterAndWeight> tmpNode = huffmanTree.root;
+        //string to array.
+        String[] messageToDecode = message.split("");
+        //the number representing a character.
+        String decodedString = "";
+
+        for(int i = 0; i<messageToDecode.length;i++)
+        {
+            if (messageToDecode[i].equals("0"))
+            {
+                tmpNode = tmpNode.left;
+            }
+            else if (messageToDecode[i].equals("1"))
+            {
+                tmpNode = tmpNode.right;
+            }
+
+            if(tmpNode.data.character != '*')
+            {
+                decodedString += tmpNode.data.character;
+                tmpNode = huffmanTree.root;
+            }
+        }
+
+        return decodedString;
+    }
+    /**
+     * Encode a character.
+     */
+    public String encodeACharacter(char Character)
+    {
+        String message =  encodeACharacterRecursive(huffmanTree.root,Character);
+        message = message.substring(0, message.length()-1);
+        return message;
+    }
+
+    /**
+     * Encode a character recursive helper.
+     */
     public String encodeACharacterRecursive(Node<CharacterAndWeight> tmp, char character)
     {
         String toReturn = "";
@@ -167,6 +225,21 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
 
        return toReturn;
     }
+
+    /**
+     * Encode a string character by character. .
+     */
+     public String encodeAString(String message)
+     {
+         String encodedMessage = "";
+         String[] messageArray = message.split("");
+         for(int i = 0; i < messageArray.length; i++)
+         {
+             encodedMessage += encodeACharacter(messageArray[i].charAt(0));
+         }
+
+         return encodedMessage;
+     }
     /**
      * Finds the amount of times that each character may occur and stores the result as an object.
      */
@@ -217,7 +290,7 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
      */
     public String decode(String codedMessage)
     {
-        return null;
+        return decodeAString(codedMessage);
     }
 
     /**
@@ -229,7 +302,7 @@ public class HuffmanTree extends BinaryTree<CharacterAndWeight> implements Huffm
      */
     public String encode(String message)
     {
-        return null;
+        return encodeAString(message);
     }
 
 }

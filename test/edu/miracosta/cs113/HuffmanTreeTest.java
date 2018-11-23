@@ -28,8 +28,10 @@ public class HuffmanTreeTest {
     HuffmanTree tree;
 
     @Test
-    public void testEncodedValuesBySize() {
-        for (int i = 0; i < DECODED.length; i++) {
+    public void testEncodedValuesBySize()
+    {
+        for (int i = 0; i < DECODED.length; i++)
+        {
             tree = new HuffmanTree(DECODED[i]);
             assertEquals(ENCODED_SIZE[i], tree.encode(DECODED[i]).length());
         }
